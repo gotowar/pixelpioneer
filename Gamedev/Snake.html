@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <button id="startButton">Start</button>
+
+  <style>
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+    #startButton {
+      display: block;
+      margin: 0 auto;
+      font-size: 24px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      position: relative; 
+      z-index: 1; 
+    }
+
+    #startButton:hover {
+      transform: scale(1.2);
+    }
+          .waice_box {
+            overflow: hidden;
+            background-image: radial-gradient(#f0c6cc 50%, transparent 0);
+            background-size: 20px 20px;
+            width: 900px;
+            height: 900px;
+            max-width: 800px;
+            max-height: 800px;
+            position: relative;
+            background-color: #1e1e4845;
+          }
+          .sanke_body {
+            position: absolute;
+            top: 0px;
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
+          }
+          .snake_food {
+            background-color: aquamarine;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+          }
+          .snake_header {
+            background-color: red;
+          }
+          .snake_footer {
+            background-color: yellow;
+          }
+        </style>
+  </head>
+  <body>
+    <div class="waice_box">
+      <div class="sanke_body snake_header" style="left: 80px"></div>
+      <div class="sanke_body" style="left: 60px"></div>
+      <div class="sanke_body" style="left: 40px"></div>
+      <div class="sanke_body" style="left: 20px"></div>
+      <div class="sanke_body snake_footer" style="left: 0px"></div>
+    </div>
+  </body>
+  
+  <script>
+    const startButton = document.getElementById("startButton");
+let gameStarted = false;
+
+startButton.addEventListener("click", () => {
+  if (!gameStarted) {
+    gameStarted = true;
+    startGame();
+    startButton.style.display = "none"; 
+  }
+});
+
+function startGame() {
+    const box_dom = document.querySelector(".waice_box");
+    let goFLag = "right";
+    let food_x, food_y;
+
+    function ifDeath(arr) {
+      let eatSelf = false;
+      let eatWall = false;
+      const newArr = new Set(
+        arr.map((item) => {
+          return JSON.stringify(item);
+        })
+      );
+      if (
+        arr[0].left > 1000 ||
+        arr[0].top > 1000 ||
+        arr[0].left < 0 ||
+        arr[0].top < 0
+      ) {
+        eatWall = true;
+      }
+      if (newArr.size != arr.length) {
+        eatSelf = true;
+      } else {
+        eatSelf = false;
+      }
+      return eatWall || eatSelf;
+    }
+
+
+    function randomFood() {
+      const x = parseInt(Math.random() * 1000);
+      const y = parseInt(Math.random() * 1000);
+      const div = document.createElement("div");
+      div.className = "snake_food";
+      food_x = x - (x % 20);
+      food_y = y - (y % 20);
+      div.style.left = `${food_x}px`;
+      div.style.top = `${food_y}px`;
+      box_dom.appendChild(div);
+    }
+    randomFood();
+
+    const snake_start = setInterval(() => {
+      let snake_dom = document.querySelectorAll(".sanke_body");
+      const snake_dom_style = Array.from(snake_dom).map((item, index) => {
+        return {
+          left: getComputedStyle(snake_dom[index]).left.split("px")[0],
+          top: getComputedStyle(snake_dom[index]).top.split("px")[0],
+        };
+      });
+
+      if (ifDeath(snake_dom_style)) {
+        clearInterval(snake_start);
+        alert("Gameover");
+      }
+
+
+      if (
+        Number(snake_dom_style[0].left) === food_x &&
+        Number(snake_dom_style[0].top) === food_y
+      ) {
+        const snake_food_eat = document.querySelectorAll(".snake_food")[0];
+        document.querySelectorAll(".snake_footer")[0].className = "sanke_body";
+        console.log(snake_food_eat);
+        snake_food_eat.className = "sanke_body snake_footer";
+        snake_food_eat.style.left = "-100px";
+        snake_food_eat.style.top = "-100px";
+        randomFood();
+      }
+
+      Array.from(snake_dom).map((item, index) => {
+        if (index === 0) {
+          if (goFLag === "left") {
+            item.style.left = `${Number(snake_dom_style[index].left) - 20}px`;
+          } else if (goFLag === "up") {
+            item.style.top = `${Number(snake_dom_style[index].top) - 20}px`;
+          } else if (goFLag === "right") {
+            item.style.left = `${Number(snake_dom_style[index].left) + 20}px`;
+          } else {
+            item.style.top = `${Number(snake_dom_style[index].top) + 20}px`;
+          }
+        } else {
+          item.style.left = snake_dom_style[index - 1].left + "px";
+          item.style.top = snake_dom_style[index - 1].top + "px";
+        }
+      });
+    }, 100);
+
+    document.onkeydown = function (e) {
+  if (e.keyCode === 37) {
+    if (goFLag === "right") {
+      return;
+    }
+    goFLag = "left";
+  } else if (e.keyCode === 38) {
+    if (goFLag === "down") {
+      return;
+    }
+    goFLag = "up";
+  } else if (e.keyCode === 39) {
+    if (goFLag === "left") {
+      return;
+    }
+    goFLag = "right";
+  } else if (e.keyCode === 40) {
+    if (goFLag === "up") {
+      return;
+    }
+    goFLag = "down";
+  }
+};}
+  </script>
+</html>

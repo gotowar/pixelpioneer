@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelPioneer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,700;1,600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1a1a1a; 
+            color: #ffffff; 
+        }
+
+
+        header {
+            background-color: #000000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .homepage-image-container {
+            position: relative;
+            max-height: 400px;
+            overflow: hidden; 
+        }
+
+        .homepage-image {
+            width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            opacity: 50%
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 2;
+
+        }
+
+        section {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .box {
+            width: 70%;
+            max-width: 750px;
+            background-repeat: repeat;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            text-align: center;
+
+        }
+
+        footer {
+            background-color: #000000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .box img {
+            width: 70%;
+            max-width: 750px;
+        }
+
+        .overall-text{
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+
+        }
+
+        .techy-warriors-title {
+            font-family: 'Exo', sans-serif;
+            color: #6789AB; 
+            text-transform: uppercase;
+            font-size: 3em;
+            text-shadow: 0 0 3px #6789AB, 0 0 6px #6789AB; 
+
+        }
+        .galaxy-wars-title {
+            font-family: 'Exo', sans-serif;
+            color: #ccd6f6; 
+            text-transform: uppercase;
+            font-size: 4em; 
+            text-shadow: 0 0 5px #4d5b9e, 
+                          0 0 10px #0a192f; 
+            letter-spacing: 2px; 
+          }
+        .pixel-pioneer-title {
+            color: #ffcc00; 
+            text-shadow: 2px 2px #000000; 
+          }
+
+        h2 {
+            font-family: 'Press Start 2P', cursive; 
+            color: #00ff00; 
+            text-shadow: 2px 2px #000000; 
+          }
+        
+
+          .call-to-action {
+            font-family: 'Arial', sans-serif; 
+            color: #ffffff; 
+            background-color: #ff4500; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            text-shadow: none; 
+            box-shadow: 0 4px #d35400; 
+            display: inline-block; 
+            margin: 20px; 
+            transition: background-color 0.3s, box-shadow 0.3s; 
+            text-decoration: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+          }
+          
+          .call-to-action:hover {
+            background-color: #e44000; 
+            box-shadow: 0 2px #cc3700;
+          }
+          
+          .call-to-action:active {
+            background-color: #cc3700; 
+            box-shadow: 0 1px #bb3300; 
+          }
+          
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class = "pixel-pioneer-title">PixelPioneer</h1>
+    </header>
+
+    <div class="homepage-image-container">
+        <img src="https://i.pinimg.com/originals/98/f7/5e/98f75eab0877e093212c5820ae93791a.jpg" alt="Homepage Image" class="homepage-image">
+        <div class="overlay-text">
+            <h2>Explore the World of 2D Gaming</h2>
+            <p class="discover-text">Discover a variety of genres, from retro-inspired platformers to strategic puzzle games, all created with attention to detail and a love for the gaming community. PixelPioneer invites you to experience the magic of 2D gaming like never before.</p>
+        </div>
+    </div>
+
+    <section>
+        <div class="box">
+            <h1 class = "techy-warriors-title">Techy Warriors</h1>
+            <a href="index.html"><img src="image-for-web/picforwebsite2.png" alt="Image 1"></a>
+            <p class="game-texts">In this enchanting side-scrolling adventure, players journey through the mystical lands of Eldoria, a world brimming with magic and ancient lore. The story revolves around a young adventurer named Arya, who embarks on a quest to recover the legendary Lost Artifact, a relic said to possess the power to restore balance to the realms.</p>
+            <a href="index.html" class="call-to-action">Click to Play!</a>
+        </div>
+
+
+
+        <div class="box">
+            <h1 class = "galaxy-wars-title">Galaxy Wars</h1>
+            <a href= "ver2.html"> <img src="image-for-web/game.png" alt="Image 2"></a>
+            <p class = "game-texts">Galaxy Wars is a sleek 2D retro styled spaceship game made using Javascript. Skillfully dodge and blast through asteroid fields to get a high score while competing to survive the longest time in this fast-pace cosmic thrill.Get ready for your space journey.</p>
+            <a href="ver2.html" class="call-to-action">Click to Play!</a>
+
+        </div>
+
+        <div class="box">
+            <h3>Hungry Snake</h3>
+            <a href="Snake.html"><img src="Snake.png" alt="Image 3"></a>
+            <p class = "game-texts">Get ready to relive the nostalgia with "Hungry Snake," a modern twist on the classic snake game that charmed millions. In this captivating 2D adventure, you control a perpetually hungry serpent eager to feast on as many treats as possible. With each snack, the snake grows longer and faster, making the game increasingly challenging.</p>
+            <a href="Snake.html" class="call-to-action">Click to Play!</a>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 PixelPioneer. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

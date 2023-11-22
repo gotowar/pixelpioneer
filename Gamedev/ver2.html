@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>2D Spaceship Game</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&display=swap">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Pixelify Sans', sans-serif;
+            background-color: black;
+        }
+
+        canvas {
+            border: 8px solid #FFFFFF;
+            /* Add background properties */
+            background-image: url('https://image.typedream.com/cdn-cgi/image/width=3840,format=auto,fit=scale-down,quality=100/https://api.typedream.com/v0/document/public/a8cb3d1d-f6ab-480a-a104-af6023f8b6cc/2TVT55SLTYuknYLMg0xmgBrfF7E_Background_space.png');
+
+        }
+
+        #gameOver {
+            display: none;
+            font-size: 36px;
+            font-weight: bold;
+            color: red;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Pixelify Sans', sans-serif; 
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: white;
+            font-family: 'Pixelify Sans', sans-serif; 
+        }
+
+        #stopwatch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: white;
+            font-family: 'Pixelify Sans', sans-serif; 
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="gameOver">GAME OVER!</div>
+    <div id="score">Score: 0</div>
+    <div id="stopwatch">Time: 0s</div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Spaceship character
+        const spaceship = new Image();
+        spaceship.src = 'https://opengameart.org/sites/default/files/spaceship.pod_.1.yellow_0.png'; 
+        const spaceshipWidth = 80;
+        const spaceshipHeight = 80;
+
+        // Block images
+        const block1 = new Image();
+        block1.src = 'https://opengameart.org/sites/default/files/styles/medium/public/Asteroid2.png';
+
+        const block2 = new Image();
+        block2.src = 'https://www.seekpng.com/png/full/216-2168369_pixel-asteroid-png-jpg-pixel-art-deadpool-logo.png';
+
+        const block3 = new Image();
+        block3.src = 'https://static.wikia.nocookie.net/pewdiepietubersimulator/images/c/ca/MiniRock.png/revision/latest?cb=20190718210143';
+
+        // Initialize the spaceship's position
+        const player = {
+            x: canvas.width / 2 - spaceshipWidth / 2,
+            y: canvas.height - 85,
+            width: spaceshipWidth,
+            height: spaceshipHeight,
+            speed: 7,
+        };
+
+        // Bullets
+        const bullets = [];
+
+        // Targets
+        const targets = [];
+        const targetSpeed = 3.5;
+        const targetWidth = 50; 
+        const targetHeight = 50; 
+
+        // Stopwatch
+        let startTime = Date.now();
+        let elapsedTime = 0;
+        let stopwatchInterval;
+
+        function updateStopwatch() {
+            if (!gameOver) {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById("stopwatch").innerText = "Time: " + elapsedTime + "s";
+            } else {
+                clearInterval(stopwatchInterval);
+            }
+        }
+
+        // Create new targets at intervals
+        setInterval(() => {
+            // You can create multiple targets in each interval
+            for (let i = 0; i < 3; i++) {
+                targets.push({
+                    x: Math.random() * (canvas.width - targetWidth),
+                    y: 0,
+                    width: targetWidth,
+                    height: targetHeight,
+                    imageIndex: Math.floor(Math.random() * 3), // Randomly select block image
+                });
+            }
+        }, 1500); // Decreased interval to 1500 milliseconds (1.5 seconds)
+
+        // Update stopwatch at shorter intervals
+        stopwatchInterval = setInterval(updateStopwatch, 1000); // Update every second
+
+        // Game over flag
+        let gameOver = false;
+        const gameOverElement = document.getElementById("gameOver");
+
+        // Score
+        let score = 0;
+        const scoreElement = document.getElementById("score");
+
+        // Game loop
+        function gameLoop() {
+            if (gameOver) {
+                gameOverElement.style.display = "block";
+                return; 
+            }
+
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Move the spaceship
+            if (keyState["ArrowLeft"] && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keyState["ArrowRight"] && player.x + player.width < canvas.width) {
+                player.x += player.speed;
+            }
+
+            // Draw the spaceship
+            ctx.drawImage(spaceship, player.x, player.y, spaceshipWidth, spaceshipHeight);
+
+            // Draw shooting line
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]); 
+            ctx.moveTo(player.x + spaceshipWidth / 2, player.y);
+            ctx.lineTo(player.x + spaceshipWidth / 2, 0);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; 
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Move and draw bullets
+            bullets.forEach(bullet => {
+                ctx.fillStyle = "rgb(0, 191, 255)";
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                bullet.y -= bullet.speed;
+
+                // Remove bullets that go off-screen
+                if (bullet.y < 0) {
+                    bullets.splice(bullets.indexOf(bullet), 1);
+                }
+            });
+
+            // Move and draw targets
+            targets.forEach(target => {
+                let targetImage;
+                // Use different images for blocks
+                if (target.imageIndex === 0) {
+                    targetImage = block1;
+                } else if (target.imageIndex === 1) {
+                    targetImage = block2;
+                } else {
+                    targetImage = block3;
+                }
+
+                ctx.drawImage(targetImage, target.x, target.y, targetWidth, targetHeight);
+                target.y += targetSpeed;
+
+                // Check for collisions between bullets and targets
+                bullets.forEach(bullet => {
+                    if (
+                        bullet.x < target.x + targetWidth &&
+                        bullet.x + bullet.width > target.x &&
+                        bullet.y < target.y + targetHeight &&
+                        bullet.y + bullet.height > target.y
+                    ) {
+                        targets.splice(targets.indexOf(target), 1);
+                        bullets.splice(bullets.indexOf(bullet), 1);
+                        score += 10; 
+                        scoreElement.innerText = "Score: " + score;
+                    }
+                });
+
+                // Check for collision between spaceship and target
+                if (
+                    player.x < target.x + targetWidth &&
+                    player.x + player.width > target.x &&
+                    player.y < target.y + targetHeight &&
+                    player.y + player.height > target.y
+                ) {
+                    gameOver = true;
+                    gameOverElement.style.display = "block";
+                }
+
+                // Remove targets that go off-screen
+                if (target.y > canvas.height) {
+                    targets.splice(targets.indexOf(target), 1);
+                }
+            });
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Keyboard input handling
+        const keyState = {};
+        window.addEventListener("keydown", function (event) {
+            keyState[event.key] = true;
+        });
+
+        window.addEventListener("keyup", function (event) {
+            keyState[event.key] = false;
+        });
+
+        // Fire a bullet
+        window.addEventListener("keydown", function (event) {
+            if (event.key === " " || event.key === "Spacebar") {
+                bullets.push({
+                    x: player.x + player.width / 2,
+                    y: player.y,
+                    width: 4,
+                    height: 20,
+                    speed: 9,
+                });
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
